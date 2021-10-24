@@ -19,15 +19,17 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 0f;
         GameIsPaused = true;
         Cursor.visible = true;
+        AudioListener.pause = true;
     }
 
     public void Resume()
     {
-        //Debug.Log("Resume");
+        Debug.Log("Resume");
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
-        Cursor.visible = false; 
+        Cursor.visible = false;
+        AudioListener.pause = false;
     }
     
     public void Quit()

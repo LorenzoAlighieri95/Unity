@@ -63,13 +63,9 @@ public class ControllerPlayer : MonoBehaviour
 
             transform.Translate(Vector3.forward * Time.deltaTime * speed /** (Time.time/10)*/);
             //rb.AddForce(0,0,speed*Time.deltaTime);
-            transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);
+            transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);  
 
-            if (!PlayerCollisions.powerUp)
-            {
-                speed = 8 + meters / 200;
-            }
-            
+            speed = 8+meters / 200;
             //Debug.Log(speed);
             /*
             if (meters < 500)

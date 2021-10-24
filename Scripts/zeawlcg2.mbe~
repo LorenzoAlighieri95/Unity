@@ -35,17 +35,19 @@ public class ControllerPlayer : MonoBehaviour
     public Text metersTravelled;
     public Text munitions;
 
-    //private Rigidbody rb;
-
     void Start()
     {
+        //Cursor.visible = false;
+
         gunPosition = gun.transform.localPosition;
         audioData = gun.GetComponent<AudioSource>();
         audioCharger = chargerSound.GetComponent<AudioSource>();
-        napalm = 250;
-        //rb = GetComponent<Rigidbody>();
+        napalm = 500;
+        //audioData.PlayDelayed(1000);
+        
     }
 
+    // Update is called once per frame
     void Update()
     {
         meters = Mathf.RoundToInt(transform.position.z);
@@ -60,16 +62,10 @@ public class ControllerPlayer : MonoBehaviour
             horizontalInput = Input.GetAxis("Horizontal");
             //mouseInput = Input.GetAxis("Mouse X");
             //transform.Rotate(Vector3.up * Time.deltaTime * speed * mouseInput);
-
             transform.Translate(Vector3.forward * Time.deltaTime * speed /** (Time.time/10)*/);
-            //rb.AddForce(0,0,speed*Time.deltaTime);
-            transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);
+            transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 5);
 
-            if (!PlayerCollisions.powerUp)
-            {
-                speed = 8 + meters / 200;
-            }
-            
+            speed = 7+meters / 200;
             //Debug.Log(speed);
             /*
             if (meters < 500)
@@ -116,7 +112,6 @@ public class ControllerPlayer : MonoBehaviour
             {
                 transform.rotation = new Quaternion(transform.rotation.x, 0.05f, transform.rotation.z, 1);
             }
-
             if (Input.GetKeyDown("space") && napalm > 0)
             {
                 audioData.Play(0);

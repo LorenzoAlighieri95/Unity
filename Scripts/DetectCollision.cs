@@ -8,7 +8,8 @@ public class DetectCollision : MonoBehaviour
     private Animator zombieAnim;
     private Scene scene;
     public static bool dead = false;
-    public GameObject gun;
+    //public GameObject gun;
+    public GameObject dropMunitions;
 
     void Start()
     {
@@ -22,6 +23,7 @@ public class DetectCollision : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        /*
         if (collision.gameObject.tag=="Projectile")
         {
             Destroy(GetComponent<Collider>());
@@ -29,30 +31,46 @@ public class DetectCollision : MonoBehaviour
             zombieAnim.SetTrigger("FallingBackTrigger");
             GetComponent<MoveForward>().speed = 0;
             Destroy(collision.gameObject);
+            //Debug.Log("COLLISION");
         }
-        else if (collision.gameObject.tag == "Player")
+        */
+        if (collision.gameObject.tag == "Player")
         {
             StartCoroutine(die());
         }     
     }
-    
+
+    void OnParticleCollision(GameObject other)
+    {
+        if (other.tag == "Projectile")
+        {
+            Destroy(GetComponent<Collider>());
+            GetComponent<MoveForward>().speed = -1;
+            zombieAnim.SetTrigger("FallingBackTrigger");
+            GetComponent<MoveForward>().speed = 0;
+            
+            if (Random.Range(0, 10) > 7)
+            {
+                Instantiate(dropMunitions, new Vector3(transform.position.x, 0, transform.position.z),dropMunitions.transform.rotation);
+            }
+        }
+    }
+
     IEnumerator die()
-    { 
+    {
+        //Debug.Log(GameObject.Find("FlameThrowerGun"));
         zombieAnim.SetTrigger("AttackTrigger");
-        GameObject.Find("AutomaticRifle").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 5);
+        GameObject.Find("FlameThrowerGun").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
         GetComponent<MoveForward>().speed = -1.25f;
         GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -1.25f;
         dead = true;
         yield return new WaitForSeconds(2.5f);
-        //Time.timeScale = 0;
         AudioListener.pause = true;
         scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
-        //Time.timeScale = 1.0f;
         dead = false;
         AudioListener.pause = false;
-        ControllerPlayer.charger.Clear();
-        
+        //ControllerPlayer.charger.Clear();        
     }
 
     /*
