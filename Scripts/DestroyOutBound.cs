@@ -18,7 +18,14 @@ public class DestroyOutBound : MonoBehaviour
 
         if (maxZPos < Camera.main.transform.position.z)
         {   
-            Destroy(gameObject);
+            if (gameObject.tag == "PowerUp" || gameObject.tag == "Munitions" || gameObject.tag == "DroppedMunitions")
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90067b69ea516564b9817503e76cbc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 1.5
 --- !u!114 &7271467159265276728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,8 +1772,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.55773926, y: 1.9986876, z: 0.48753932}
-  m_Center: {x: -0.011964819, y: 0.88897985, z: -0.036510307}
+  m_Size: {x: 0.46690494, y: 1.921244, z: 0.44785395}
+  m_Center: {x: 0.0012930414, y: 0.85025805, z: 0.06926319}
 --- !u!114 &4963034882930420730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1796,7 +1796,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ff8240148ee026c4babb53949381e1cd, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 5cd921b91deac4f47b05c451951f7a53, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

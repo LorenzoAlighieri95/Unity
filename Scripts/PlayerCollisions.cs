@@ -12,17 +12,18 @@ public class PlayerCollisions : MonoBehaviour
 
     public GameObject voice;
     public GameObject blood;
+    public GameObject fire;
     
-
     public static bool powerUp = false;
     private Color objectColor;
     private float prevSpeed;
-    
+    private GameObject flameThrowerGun;
 
     void Start()
     {
         objectColor = blood.GetComponent<Renderer>().material.color;
-        blood.GetComponent<Renderer>().material.color = new Color(objectColor.r, objectColor.g, objectColor.b, 0); 
+        blood.GetComponent<Renderer>().material.color = new Color(objectColor.r, objectColor.g, objectColor.b, 0);
+        flameThrowerGun = GameObject.Find("FlameThrowerGun");
     }
 
     void Update()
@@ -41,7 +42,7 @@ public class PlayerCollisions : MonoBehaviour
             Debug.Log("right " + " collision x: " + collision.GetContact(0).point.x + " player x: " + transform.position.x);
         }
         */
-        if (collision.gameObject.tag == "Tree" || collision.gameObject.tag == "RandomObj")
+        if ((collision.gameObject.tag == "Tree" || collision.gameObject.tag == "RandomObj") && !powerUp)
         {
             if (!voice.GetComponent<AudioSource>().isPlaying)
             {
@@ -54,11 +55,15 @@ public class PlayerCollisions : MonoBehaviour
             StartCoroutine(FadeInObject(blood, 1.5f));
             StartCoroutine(FadeOutObject(blood, 0.5f));
         } 
-        if (collision.gameObject.tag == "Zombie")
+        if (collision.gameObject.tag == "Zombie" && !powerUp)
         {
-            voice.GetComponent<AudioSource>().PlayOneShot(scream, 1f);
+            if (!voice.GetComponent<AudioSource>().isPlaying)
+            {
+                voice.GetComponent<AudioSource>().PlayOneShot(scream, 1f);
+            }
             StartCoroutine(FadeInObject(blood, 1.5f));
         }
+        /*
         if (collision.gameObject.tag == "Munitions")
         {
             //ControllerPlayer.charger.Clear();
@@ -77,7 +82,35 @@ public class PlayerCollisions : MonoBehaviour
                 voice.GetComponent<AudioSource>().PlayOneShot(reloadGun, 1f);
             }
         }
-        if (collision.gameObject.tag == "PowerUp")
+        if (collision.gameObject.tag == "PowerUp" && !powerUp)
+        {
+            StartCoroutine(PowerUp());
+        }
+        */
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Munitions"))
+        {
+            //ControllerPlayer.charger.Clear();
+            ControllerPlayer.napalm = 500;
+            voice.GetComponent<AudioSource>().PlayOneShot(reloadGun, 1f);
+        }
+        if (other.CompareTag("DroppedMunitions")) 
+        {
+            if (ControllerPlayer.napalm <= 450)
+            {
+                ControllerPlayer.napalm += 50;
+                voice.GetComponent<AudioSource>().PlayOneShot(reloadGun, 1f);
+            }
+            else if (ControllerPlayer.napalm > 450)
+            {
+                ControllerPlayer.napalm = 500;
+                voice.GetComponent<AudioSource>().PlayOneShot(reloadGun, 1f);
+            }
+        }
+        if (other.CompareTag("PowerUp") && !powerUp)
         {
             StartCoroutine(PowerUp());
         }
@@ -85,14 +118,18 @@ public class PlayerCollisions : MonoBehaviour
 
     IEnumerator PowerUp()
     {
-        voice.GetComponent<AudioSource>().PlayOneShot(fallingKids, 1f);
+        flameThrowerGun.SetActive(false);
+        voice.GetComponent<AudioSource>().PlayOneShot(fallingKids, 0.5f);
         powerUp = true;
-        GetComponent<BoxCollider>().enabled = false;
+        fire.SetActive(true);
+        //GetComponent<BoxCollider>().enabled = false;
         prevSpeed = GetComponent<ControllerPlayer>().speed;
         GetComponent<ControllerPlayer>().speed = prevSpeed*5;
-        yield return new WaitForSeconds(17);
+        yield return new WaitForSeconds(18);
+        flameThrowerGun.SetActive(true);
         GetComponent<ControllerPlayer>().speed = prevSpeed;
-        GetComponent<BoxCollider>().enabled = true;
+        //GetComponent<BoxCollider>().enabled = true;
+        fire.SetActive(false);
         powerUp = false;
     }
 

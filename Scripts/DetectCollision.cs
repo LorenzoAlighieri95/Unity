@@ -7,13 +7,16 @@ public class DetectCollision : MonoBehaviour
 {
     private Animator zombieAnim;
     private Scene scene;
+    private Quaternion originalRotation;
     public static bool dead = false;
     //public GameObject gun;
     public GameObject dropMunitions;
 
+
     void Start()
     {
         zombieAnim = GetComponent<Animator>();
+        originalRotation = transform.rotation;
     }
 
     void Update()
@@ -36,8 +39,18 @@ public class DetectCollision : MonoBehaviour
         */
         if (collision.gameObject.tag == "Player")
         {
-            StartCoroutine(die());
-        }     
+            if (!PlayerCollisions.powerUp)
+            {
+                StartCoroutine(die());
+                transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, Time.time * 1.0f);
+            } else
+            {
+                zombieAnim.SetTrigger("FallingBackTrigger");
+            }
+        } else
+        {
+            transform.Rotate(0, Random.Range(-45,45), 0, Space.Self);
+        }
     }
 
     void OnParticleCollision(GameObject other)
@@ -49,20 +62,19 @@ public class DetectCollision : MonoBehaviour
             zombieAnim.SetTrigger("FallingBackTrigger");
             GetComponent<MoveForward>().speed = 0;
             
-            if (Random.Range(0, 10) > 7)
+            if (Random.Range(0, 10) > 8)
             {
-                Instantiate(dropMunitions, new Vector3(transform.position.x, 0, transform.position.z),dropMunitions.transform.rotation);
+                Instantiate(dropMunitions, new Vector3(transform.position.x, 0.2f, transform.position.z),dropMunitions.transform.rotation);
             }
         }
     }
 
     IEnumerator die()
     {
-        //Debug.Log(GameObject.Find("FlameThrowerGun"));
         zombieAnim.SetTrigger("AttackTrigger");
         GameObject.Find("FlameThrowerGun").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
-        GetComponent<MoveForward>().speed = -1.25f;
-        GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -1.25f;
+        GetComponent<MoveForward>().speed = -1f;
+        GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -1f;
         dead = true;
         yield return new WaitForSeconds(2.5f);
         AudioListener.pause = true;
@@ -71,6 +83,7 @@ public class DetectCollision : MonoBehaviour
         dead = false;
         AudioListener.pause = false;
         //ControllerPlayer.charger.Clear();        
+        
     }
 
     /*

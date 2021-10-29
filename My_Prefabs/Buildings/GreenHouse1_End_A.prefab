@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8950353745435782824}
   m_Layer: 0
   m_Name: GreenHouse1_End_A
-  m_TagString: Untagged
+  m_TagString: Buildings
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295

@@ -37,9 +37,7 @@ public class ControllerPlayer : MonoBehaviour
 
     public Text metersTravelled;
     public Text munitions;
-    public Text finalScore;
 
-    private float rotationY;
     //private Rigidbody rb;
 
     void Start()
@@ -51,15 +49,14 @@ public class ControllerPlayer : MonoBehaviour
         //rb = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         meters = Mathf.RoundToInt(transform.position.z);
 
         if (!PauseMenu.GameIsPaused && !DetectCollision.dead)
         {      
-            munitions.text = "   Napalm: " + napalm.ToString();
-            metersTravelled.text = "   Score: " + meters.ToString();
-            finalScore.text = "Final Score: " + meters.ToString();
+            munitions.text = "  Napalm: " + napalm.ToString();
+            metersTravelled.text = "  Score: " + meters.ToString();
 
             if (!PlayerCollisions.powerUp)
             {
@@ -70,87 +67,54 @@ public class ControllerPlayer : MonoBehaviour
             }
 
             transform.Translate(Vector3.forward * Time.deltaTime * speed);
-   
+
             //CODICE PER LA ROTAZIONE
             mouseInput = Input.GetAxis("Mouse X");
-            gun.transform.Rotate(Vector3.up * Time.deltaTime * mouseInput);
-
-            rotationY += mouseInput * 0.5f;
-            rotationY= Mathf.Clamp (rotationY, 60,100);
-            gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, rotationY,gun.transform.localEulerAngles.z); 
+            transform.Rotate(Vector3.up * Time.deltaTime * speed * mouseInput);
+            if (transform.rotation.y < -0.1f)
+            {
+                transform.rotation = new Quaternion(transform.rotation.x, -0.1f, transform.rotation.z, 1);
+            }
+            if (transform.rotation.y > 0.05f)
+            {
+                transform.rotation = new Quaternion(transform.rotation.x, 0.05f, transform.rotation.z, 1);
+            }
             //FINE CODICE ROTAZIONE
-            
+
             horizontalInput = Input.GetAxis("Horizontal");
             transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);
 
-            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)) && napalm > 0)
+            if (Input.GetKeyDown("space") && napalm > 0)
             {
                 audioData.Play(0);
             }
-            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)) && napalm == 0)
+            if (Input.GetKeyDown("space") && napalm == 0)
             {
                 audioCharger.PlayOneShot(noHammo, 1f);
             }
-            if ((Input.GetKey("space") || Input.GetMouseButton(0)) && napalm > 0)
+            if (Input.GetKey("space") && napalm > 0)
             {
                 flameThrower.SetActive(true);
                 smoke.SetActive(false);
                 gun.transform.position = new Vector3(gun.transform.position.x, gun.transform.position.y, Random.Range(gun.transform.position.z - offset, gun.transform.position.z + offset));
                 napalm = napalm - 1;
             }
-            if ((Input.GetKeyUp("space")||Input.GetMouseButtonUp(0)) || napalm == 0)
+            if (Input.GetKeyUp("space") || napalm == 0)
             {
                 flameThrower.SetActive(false);
                 smoke.SetActive(true);
                 gun.transform.localPosition = gunPosition;
                 audioData.Pause();
             }
-            
+
 #if UNITY_ANDROID
                 horizontalInput = joystickMove.Horizontal;
-                transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 5f);
-   
-                mouseInput = joystickFire.Horizontal;
-                gun.transform.Rotate(Vector3.up * Time.deltaTime * mouseInput);
-
-                rotationY += mouseInput * 2.5f;
-                rotationY= Mathf.Clamp (rotationY, 60,120);
-                gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, rotationY,gun.transform.localEulerAngles.z);
-                /*
-                if (gun.transform.localEulerAngles.y < 60f)
+                transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);
                 {
-                    gun.transform.rotation = new Quaternion.Euler(gun.transform.localEulerAngles.x, 60f, gun.transform.localEulerAngles.z, 1);
-                    
-                    Debug.Log("minore di 60: " +  gun.transform.position.y);
+                    Vector2 pos = touch.position;
+                    pos.x = (pos.x - (float)Screen.width / 2.0f) / ((float)Screen.width / 2.0f);
+                    transform.Translate(new Vector3(-pos.x, 0, 0)* Time.deltaTime * speed);
                 }
-                if (gun.transform.localEulerAngles.y > 120)
-                {   
-               
-                    gun.transform.rotation = new Quaternion.Euler(gun.transform.localEulerAngles.x, 120f,gun.transform.localEulerAngles.z, 1);
-                    Debug.Log("maggiore di 120: "+  gun.transform.position.y);
-                }
-                */
-                if (mouseInput != 0 && napalm == 0)
-                {
-                    audioCharger.PlayOneShot(noHammo, 1f);
-                }
-                if (mouseInput != 0 && napalm > 0)
-                {       
-                    audioData.Play(0);
-                    flameThrower.SetActive(true);
-                    smoke.SetActive(false);
-                    gun.transform.position = new Vector3(gun.transform.position.x, gun.transform.position.y, Random.Range(gun.transform.position.z - offset, gun.transform.position.z + offset));
-                    napalm = napalm - 1;
-                }
-                if (mouseInput == 0 || napalm == 0)
-                {
-                    flameThrower.SetActive(false);
-                    smoke.SetActive(true);
-                    gun.transform.localPosition = gunPosition;
-                    audioData.Pause();
-                }
-                
-                
 #endif
         }
         else

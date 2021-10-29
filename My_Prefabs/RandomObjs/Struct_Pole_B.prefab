@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: -1474344897578712920}
   m_Layer: 0
   m_Name: Struct_Pole_B
-  m_TagString: Untagged
+  m_TagString: RandomObj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -4,23 +4,21 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    public float spawnDistance = 250f;
     public GameObject zombie;
     public GameObject munitions;
     public GameObject powerUp;
     public GameObject cross;
-    public GameObject [] forest;
-    public GameObject [] grass;
-    public GameObject [] randomObjs;
-    public GameObject [] buildings;
+    public GameObject[] forest;
+    public GameObject[] grass;
+    public GameObject[] randomObjs;
+    public GameObject[] buildings;
 
-    public AudioClip [] zombieSounds;
+    public AudioClip[] zombieSounds;
 
     private float spawnZ;
     private float spawnX;
     private float spawnRangeX = 60f;
-    //private float zombieZ = 100f;
-    //private float evinronmentZ = 200f;
-    private float startDelay = 0;
     private int indexForest;
     private int indexGrass;
     private int indexObjs;
@@ -33,18 +31,30 @@ public class SpawnManager : MonoBehaviour
     public float buildsInterval = 10f;
     public float munitionsInterval = 100;
     public float crossesInterval = 1f;
-    public float powerUpInterval = 100; 
+    public float powerUpInterval = 100;
+
+    public bool spawnZombie = true;
+    public bool spawnForest = true;
+    public bool spawnGrass = true;
+    public bool spawnRandomObj = true;
+    public bool spawnBuildings = true;
+    public bool spawnMunitions = true;
+    public bool spawnCrosses = true;
+    public bool spawnPowerUps = true;
 
     void Start()
     {
-        InvokeRepeating("SpawnRandomZombie", startDelay, zombieInterval);
-        InvokeRepeating("SpawnForest", startDelay, forestInterval);
-        InvokeRepeating("SpawnGrass",startDelay,grassInterval);
-        InvokeRepeating("SpawnRandomObj",startDelay,objsInterval);
-        InvokeRepeating("SpawnBuildings",startDelay,buildsInterval);
-        InvokeRepeating("SpawnMunitions", startDelay, munitionsInterval);
-        InvokeRepeating("SpawnCrosses", startDelay, crossesInterval);
-        InvokeRepeating("SpawnPowerUps", 10, powerUpInterval);
+        StartCoroutine(SpawnRandomZombie(zombieInterval));
+        
+        StartCoroutine(SpawnForest(forestInterval));
+        
+        StartCoroutine(SpawnGrass(grassInterval));
+        StartCoroutine(SpawnRandomObj(objsInterval));
+        StartCoroutine(SpawnBuildings(buildsInterval));
+        StartCoroutine(SpawnMunitions(munitionsInterval));
+        //StartCoroutine(SpawnCrosses(crossesInterval));
+        StartCoroutine(SpawnPowerUps(powerUpInterval));
+        
     }
 
     void Update()
@@ -52,112 +62,149 @@ public class SpawnManager : MonoBehaviour
 
     }
 
-    /*
-    void SpawnObject(zDistance, object) {
-        //int index = Random.Range(0, animalPrefabs.Length);
-        spawnZ = Camera.main.transform.position.z + zDistance;
-        spawnX = Random.Range(spawnRangeX, -spawnRangeX);
-        Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
-        Instantiate(object, spawnPos, object.transform.rotation);
-        //Debug.Log("Zombie: x: "+spawnX+ " z: "+spawnZ+ " interval: "+spawnIntervalForest);
-    }*/
-
-    void SpawnRandomZombie()
+    IEnumerator SpawnRandomZombie(float waitTime)
     {
-        zombieInterval = 0.15f/ControllerPlayer.meters; //NON SO SE FUNZIONA
-        //int index = Random.Range(0, animalPrefabs.Length);
-        spawnZ = Camera.main.transform.position.z + 301;
-        //spawnRangeX += Camera.main.transform.position.x;
-        //spawnX = Random.Range(15, -15);
-        spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
-        Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
-        Instantiate(zombie, spawnPos, zombie.transform.rotation);
-        if (zombie != null)
+        while (spawnZombie)
         {
-            zombie.GetComponent<AudioSource>().clip = zombieSounds[Random.Range(0, zombieSounds.Length)];
-            zombie.GetComponent<AudioSource>().Play(0);    
+            yield return new WaitForSeconds(waitTime);
+            zombieInterval = 5 / (ControllerPlayer.meters+1);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
+            Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+            //Instantiate(zombie, spawnPos, zombie.transform.rotation);
+            zombie = ObjectPool.SharedInstance.GetPooledObject("Zombie");
+            if (zombie != null)
+            {
+                zombie.transform.position = spawnPos;
+                zombie.SetActive(true);
+                zombie.GetComponent<AudioSource>().clip = zombieSounds[Random.Range(0, zombieSounds.Length)];
+                zombie.GetComponent<AudioSource>().Play(0);
+            }
+            waitTime = zombieInterval;
+        }
+    }
+    
+    IEnumerator SpawnForest(float waitTime)
+    {
+        while (spawnForest)
+        {
+            yield return new WaitForSeconds(waitTime);
+            indexForest = Random.Range(0, forest.Length);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+            Vector3 spawnPos = new Vector3(spawnX, -1, spawnZ);
+            //GameObject tree = forest[indexForest];
+            GameObject tree = ObjectPool.SharedInstance.GetPooledObject("Tree");
+            float y = Random.Range(0f, 360f);
+            if (tree != null)
+            {
+                tree.transform.position = spawnPos;
+                tree.transform.rotation = Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z);
+                tree.SetActive(true);
+            }
+            //Instantiate(tree, spawnPos, Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z));
         }
     }
 
-    void SpawnForest() 
-    {     
-        //spawnIntervalForest = 1;//Random.Range(0,2);
-        spawnZ = Camera.main.transform.position.z+ 301;
-        indexForest = Random.Range(0, forest.Length);
-        spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-        Vector3 spawnPos = new Vector3(spawnX, -1, spawnZ);
-        GameObject tree = forest[indexForest];
-        //Debug.Log("Tree: x: "+spawnX+ " z: "+spawnZ+ " " + tree.name + " interval: "+spawnIntervalForest);
-        float y = Random.Range(0f, 360f);
-        Instantiate(tree, spawnPos, Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z));      
-    }
-
-    void SpawnGrass()
+    IEnumerator SpawnGrass(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z+ 301;
-        indexGrass = Random.Range(0, grass.Length);
-        //spawnRangeX += Camera.main.transform.position.x;
-        //spawnX = Random.Range(spawnRangeX, -spawnRangeX);
-        spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-        Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
-        GameObject blade = grass[indexGrass];
-        Instantiate(blade, spawnPos, blade.transform.rotation);
+        while (spawnGrass)
+        {
+            yield return new WaitForSeconds(waitTime);
+            indexGrass = Random.Range(0, grass.Length);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+            Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+            //GameObject blade = grass[indexGrass];
+            //Instantiate(blade, spawnPos, blade.transform.rotation);
+            GameObject blade = ObjectPool.SharedInstance.GetPooledObject("Grass");
+            if (blade != null)
+            {
+                blade.transform.position = spawnPos;
+                blade.SetActive(true);
+            }
+        }
     }
 
-    void SpawnRandomObj()
+    IEnumerator SpawnRandomObj(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z+ 301;
-        indexObjs = Random.Range(0, randomObjs.Length);
-        //spawnRangeX += Camera.main.transform.position.x;
-        //spawnX = Random.Range(spawnRangeX, -spawnRangeX);
-        spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-        Vector3 spawnPos = new Vector3(spawnX, -0.2f, spawnZ);
-        GameObject obj = randomObjs[indexObjs];
-        //Debug.Log("Blade: x: "+spawnX+ " z: "+spawnZ+ " " + blade.name + " interval: ");
-        float y = Random.Range(0f, 360f);
-        Instantiate(obj, spawnPos,Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z));    
+        while (spawnRandomObj)
+        {
+            yield return new WaitForSeconds(waitTime);
+            indexObjs = Random.Range(0, randomObjs.Length);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+            Vector3 spawnPos = new Vector3(spawnX, -0.2f, spawnZ);
+            //GameObject obj = randomObjs[indexObjs];
+            float y = Random.Range(0f, 360f);
+            //Instantiate(obj, spawnPos, Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z));
+            GameObject obj = ObjectPool.SharedInstance.GetPooledObject("RandomObj");
+            if (obj != null)
+            {
+                obj.transform.position = spawnPos;
+                obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z);
+                obj.SetActive(true);
+            }
+        }
     }
 
-    void SpawnBuildings()
+    IEnumerator SpawnBuildings(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z+ 301;
-        indexBuilds = Random.Range(0, buildings.Length);
-        //spawnRangeX += Camera.main.transform.position.x;
-        float [] array = new float[] { Random.Range(Camera.main.transform.position.x -60, -80), Random.Range(Camera.main.transform.position.x + 60, 80) };
-        spawnX = array[Random.Range(0,array.Length)];
-        //spawnX = Random.Range(Random.Range(Camera.main.transform.position.x-80, -100), Random.Range(Camera.main.transform.position.x + 80, 100));
-        //Debug.Log("buildx: " + spawnX + " playerx: " + Camera.main.transform.position.x);
-        Vector3 spawnPos = new Vector3(spawnX, -0.2f, spawnZ);
-        GameObject obj = buildings[indexBuilds];
-        //Debug.Log("Blade: x: "+spawnX+ " z: "+spawnZ+ " " + blade.name + " interval: ");
-        float y = Random.Range(0f, 360f);
-        Instantiate(obj, spawnPos,Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z));   
+        while (spawnBuildings)
+        {
+            yield return new WaitForSeconds(waitTime);
+            indexBuilds = Random.Range(0, buildings.Length);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            float[] array = new float[] { Random.Range(Camera.main.transform.position.x - 60, -80), Random.Range(Camera.main.transform.position.x + 60, 80) };
+            spawnX = array[Random.Range(0, array.Length)];
+            Vector3 spawnPos = new Vector3(spawnX, -0.5f, spawnZ);
+            //GameObject obj = buildings[indexBuilds];
+            float y = Random.Range(0f, 360f);
+            //Instantiate(obj, spawnPos, Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z));
+            GameObject obj = ObjectPool.SharedInstance.GetPooledObject("Buildings");
+            if (obj != null)
+            {
+                obj.transform.position = spawnPos;
+                obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z);
+                obj.SetActive(true);
+            }
+        }
     }
 
-    void SpawnMunitions()
+    IEnumerator SpawnMunitions(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z + 100;
-        //spawnX = Random.Range(10,-10);
-        spawnX = Random.Range(Camera.main.transform.position.x - 10, Camera.main.transform.position.x + 10);
-        Vector3 spawnPos = new Vector3(spawnX, 0.1f, spawnZ);
-        Instantiate(munitions, spawnPos, munitions.transform.rotation);
+        while (spawnMunitions)
+        {
+            yield return new WaitForSeconds(waitTime);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - 10, Camera.main.transform.position.x + 10);
+            Vector3 spawnPos = new Vector3(spawnX, 0.2f, spawnZ);
+            Instantiate(munitions, spawnPos, munitions.transform.rotation);
+        }
     }
-
-    void SpawnCrosses()
+    
+    IEnumerator SpawnCrosses(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z + 301;
-        spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-        Vector3 spawnPos = new Vector3(spawnX, 1.4f, spawnZ);
-        float y = Random.Range(0f, 360f);
-        Instantiate(cross, spawnPos, Quaternion.Euler(cross.transform.rotation.x, y, cross.transform.rotation.z));
+        while (spawnCrosses)
+        {
+            yield return new WaitForSeconds(waitTime);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+            Vector3 spawnPos = new Vector3(spawnX, 1,spawnZ);
+            float y = Random.Range(0f, 360f);
+            Instantiate(cross, spawnPos, Quaternion.Euler(cross.transform.rotation.x, y, cross.transform.rotation.z));
+        }
     }
-
-    void SpawnPowerUps()
+    
+    IEnumerator SpawnPowerUps(float waitTime)
     {
-        spawnZ = Camera.main.transform.position.z + 100;
-        spawnX = Random.Range(Camera.main.transform.position.x - 10, Camera.main.transform.position.x + 10);
-        Vector3 spawnPos = new Vector3(spawnX, 0.1f, spawnZ);
-        Instantiate(powerUp, spawnPos, powerUp.transform.rotation);
+        while (spawnZombie)
+        {
+            yield return new WaitForSeconds(waitTime);
+            spawnZ = Camera.main.transform.position.z + spawnDistance;
+            spawnX = Random.Range(Camera.main.transform.position.x - 10, Camera.main.transform.position.x + 10);
+            Vector3 spawnPos = new Vector3(spawnX, 0.2f, spawnZ);
+            Instantiate(powerUp, spawnPos, powerUp.transform.rotation);
+        }
     }
-
 }
