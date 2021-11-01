@@ -17,18 +17,25 @@ public class PlayerCollisions : MonoBehaviour
     public static bool powerUp = false;
     private Color objectColor;
     private float prevSpeed;
+    //private GameObject flameThrowerGun;
+
+    public static bool takeGun;
     private GameObject flameThrowerGun;
+    private GameObject gun;
+
+    public bool boolean=false;
 
     void Start()
     {
         objectColor = blood.GetComponent<Renderer>().material.color;
         blood.GetComponent<Renderer>().material.color = new Color(objectColor.r, objectColor.g, objectColor.b, 0);
-        flameThrowerGun = GameObject.Find("FlameThrowerGun");
+
+        
     }
 
     void Update()
     {
-        
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -63,6 +70,23 @@ public class PlayerCollisions : MonoBehaviour
             }
             StartCoroutine(FadeInObject(blood, 1.5f));
         }
+        if (collision.gameObject.tag == "Gun" && !this.boolean)
+        {
+            flameThrowerGun = GameObject.Find("FlameThrowerGun");
+            gun = GameObject.Find("Gun");
+            flameThrowerGun.GetComponent<PickUpController>().Drop(flameThrowerGun);
+            gun.GetComponent<PickUpController>().PickUp(gun);
+            StartCoroutine(this.ChangeBool());
+        }
+        else if (collision.gameObject.tag == "FlameThrowerGun" && !this.boolean)
+        {
+              flameThrowerGun = GameObject.Find("FlameThrowerGun");
+              gun = GameObject.Find("Gun");
+              flameThrowerGun.GetComponent<PickUpController>().Drop(gun);
+              gun.GetComponent<PickUpController>().PickUp(flameThrowerGun);
+            StartCoroutine(this.ChangeBool());
+        }     
+
         /*
         if (collision.gameObject.tag == "Munitions")
         {
@@ -114,6 +138,13 @@ public class PlayerCollisions : MonoBehaviour
         {
             StartCoroutine(PowerUp());
         }
+    }
+
+    IEnumerator ChangeBool()
+    {
+        boolean = true;
+        yield return new WaitForSeconds(2);
+        boolean = false;
     }
 
     IEnumerator PowerUp()

@@ -24,7 +24,7 @@ public class SpawnManager : MonoBehaviour
     private int indexObjs;
     private int indexBuilds;
 
-    public float zombieInterval = 1.5f;
+    public float zombieInterval = 0;
     public float forestInterval = 0.70f;
     public float grassInterval = 0.000005f;
     public float objsInterval = 5f;
@@ -67,7 +67,9 @@ public class SpawnManager : MonoBehaviour
         while (spawnZombie)
         {
             yield return new WaitForSeconds(waitTime);
-            zombieInterval = 5 / (ControllerPlayer.meters+1);
+            zombieInterval = 50f/ ((float)ControllerPlayer.meters+1);
+            //zombieInterval = 5f / (ControllerPlayer.meters + 1);
+            //Debug.Log( "Meters: " +ControllerPlayer.meters + 1+ " interval: "+ zombieInterval);
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
             Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
@@ -114,7 +116,7 @@ public class SpawnManager : MonoBehaviour
             indexGrass = Random.Range(0, grass.Length);
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-            Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+            Vector3 spawnPos = new Vector3(spawnX, 0.2f, spawnZ);
             //GameObject blade = grass[indexGrass];
             //Instantiate(blade, spawnPos, blade.transform.rotation);
             GameObject blade = ObjectPool.SharedInstance.GetPooledObject("Grass");

@@ -43,13 +43,14 @@ public class DetectCollision : MonoBehaviour
             {
                 StartCoroutine(die());
                 transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, Time.time * 1.0f);
+                
             } else
             {
                 zombieAnim.SetTrigger("FallingBackTrigger");
             }
         } else
         {
-            transform.Rotate(0, Random.Range(-45,45), 0, Space.Self);
+           transform.Rotate(0, Random.Range(-45,45), 0, Space.Self);
         }
     }
 
@@ -60,6 +61,7 @@ public class DetectCollision : MonoBehaviour
             Destroy(GetComponent<Collider>());
             GetComponent<MoveForward>().speed = -1;
             zombieAnim.SetTrigger("FallingBackTrigger");
+            
             GetComponent<MoveForward>().speed = 0;
             
             if (Random.Range(0, 10) > 8)
@@ -73,8 +75,8 @@ public class DetectCollision : MonoBehaviour
     {
         zombieAnim.SetTrigger("AttackTrigger");
         GameObject.Find("FlameThrowerGun").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
-        GetComponent<MoveForward>().speed = -1f;
-        GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -1f;
+        GetComponent<MoveForward>().speed = -0.5f;
+        GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -0.5f;
         dead = true;
         yield return new WaitForSeconds(2.5f);
         AudioListener.pause = true;

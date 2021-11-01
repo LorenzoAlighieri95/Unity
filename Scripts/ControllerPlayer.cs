@@ -71,34 +71,44 @@ public class ControllerPlayer : MonoBehaviour
 
             transform.Translate(Vector3.forward * Time.deltaTime * speed);
    
-            //CODICE PER LA ROTAZIONE
+            //CODICE PER LA ROTAZIONE MOUSE
             mouseInput = Input.GetAxis("Mouse X");
-            gun.transform.Rotate(Vector3.up * Time.deltaTime * mouseInput);
-
-            rotationY += mouseInput * 0.5f;
-            rotationY= Mathf.Clamp (rotationY, 60,100);
-            gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, rotationY,gun.transform.localEulerAngles.z); 
+            rotationY += mouseInput * 1.5f;
+            rotationY= Mathf.Clamp (rotationY, 60,110);
+            float rotationY2 = Mathf.Clamp(rotationY, -5, 5);
+            Debug.Log(rotationY);
+            gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, rotationY, gun.transform.localEulerAngles.z);
+            //transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, rotationY2,transform.localEulerAngles.z);
+            //Camera.main.transform.localEulerAngles = new Vector3(Camera.main.transform.localEulerAngles.x, rotationY, Camera.main.transform.localEulerAngles.z);
             //FINE CODICE ROTAZIONE
-            
+            //CODICE PER LA ROTAZIONE JOYSTICK
+            if (Input.GetJoystickNames().Length > 0)
+            {
+                mouseInput = Input.GetAxis("Joystick X");
+                rotationY += mouseInput * 10f;
+                rotationY = Mathf.Clamp(rotationY, 60, 110);
+                gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, rotationY, gun.transform.localEulerAngles.z);
+            }
+            //FINE CODICE ROTAZIONE
             horizontalInput = Input.GetAxis("Horizontal");
             transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * 1.5f);
-
-            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)) && napalm > 0)
+            
+            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)|| Input.GetButtonDown("Fire2")) && napalm > 0)
             {
                 audioData.Play(0);
             }
-            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0)) && napalm == 0)
+            if ((Input.GetKeyDown("space") || Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire2")) && napalm == 0)
             {
                 audioCharger.PlayOneShot(noHammo, 1f);
             }
-            if ((Input.GetKey("space") || Input.GetMouseButton(0)) && napalm > 0)
+            if ((Input.GetKey("space") || Input.GetMouseButton(0) || Input.GetButton("Fire2")) && napalm > 0)
             {
                 flameThrower.SetActive(true);
                 smoke.SetActive(false);
                 gun.transform.position = new Vector3(gun.transform.position.x, gun.transform.position.y, Random.Range(gun.transform.position.z - offset, gun.transform.position.z + offset));
                 napalm = napalm - 1;
             }
-            if ((Input.GetKeyUp("space")||Input.GetMouseButtonUp(0)) || napalm == 0)
+            if ((Input.GetKeyUp("space")||Input.GetMouseButtonUp(0) || Input.GetButtonUp("Fire2")) || napalm == 0)
             {
                 flameThrower.SetActive(false);
                 smoke.SetActive(true);
