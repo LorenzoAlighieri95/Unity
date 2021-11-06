@@ -4,60 +4,32 @@ using UnityEngine;
 
 public class MoveForward : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public float speed = 5;
-    private GameObject player;
+    public float speed = 0;
     private Transform playerTransform;
-    //private float maxDist = 50;
-    //private float minDist = 0;
-    //public GameObject zombie;
-    //private Vector3 vector;
+    [SerializeField] private float rotation_Speed=1f;
+    [SerializeField] private float playerRange = 20;
+
     void Start()
     {
-        player = GameObject.Find("Player");
-        playerTransform = player.transform;
+        playerTransform = GameObject.Find("Player").transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
-        /*
-        if (Random.Range(0, 10) < 2)
-        {
-            if (playerTransform.position.z +1 < transform.position.z)
-            {
-                //Debug.Log("prev: " + transform.rotation);
-                transform.LookAt(playerTransform);
-                //Debug.Log("adter:" + transform.rotation);
-            }
-        }
-        */
+        Vector3 lTargetDir = playerTransform.position - transform.position;
+        lTargetDir.y = 0.0f;
+        
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * rotation_Speed);
+        
         //transform.LookAt(new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z));
         
-        if (transform.position.z < playerTransform.position.z + 10 && transform.position.x > transform.position.x - 5 && transform.position.x < transform.position.x + 5)
+        if (transform.position.z < playerTransform.position.z + playerRange*2 && transform.position.x > transform.position.x - playerRange && transform.position.x < transform.position.x + playerRange)
         {
-            //Debug.Log("pre: " +transform.rotation);
-            transform.LookAt(new Vector3(playerTransform.position.x, transform.position.y,playerTransform.position.z));
-            //Debug.Log("after: "+transform.rotation);
+            GetComponent<Animator>().SetTrigger("RunTrigger");
+            //speed = 2;
         }
         
-        //transform.position += transform.forward * speed * Time.deltaTime;
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
-        /*
-        if (Vector3.Distance(transform.position, playerTransform.position) >= minDist)
-         {
-
-             
-             Debug.Log("player position: " + playerTransform.position + " zombie position: " + transform.position);
-
-             
-             if (Vector3.Distance(transform.position, playerTransform.position) <= MaxDist)
-             {
-                 transform.Translate(Vector3.forward * speed * Time.deltaTime);
-             }
-             
-         }
-        */
+        //transform.position += transform.forward * speed * Time.deltaTime;   
     }
 }

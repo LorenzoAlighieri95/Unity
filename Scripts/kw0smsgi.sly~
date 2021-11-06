@@ -1,0 +1,125 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GunScript : MonoBehaviour
+{
+    public GameObject projectilePrefab;
+    public GameObject muzzle;
+    public GameObject chargerSound;
+    public GameObject flameThrower;
+    public GameObject smoke;
+    //public float fireRate=0.25f;
+    private float offset = 0.015f;
+    private GameObject projectile;
+    private Vector3 gunPosition;
+    private AudioSource audioData;
+    private AudioSource audioCharger;
+    public AudioClip noHammo;
+    public static int munitions;
+    public static int napalm;
+
+    void Start()
+    {
+        gunPosition = transform.localPosition;
+        audioData = GetComponent<AudioSource>();
+        audioCharger = chargerSound.GetComponent<AudioSource>();
+        if (tag == "FlameThrowerGun")
+        {
+            napalm = 250;
+            munitions = 0;
+            ControllerPlayer.hammo = napalm;
+            //Debug.Log("sono qui nello start");
+        }
+        else if (tag == "Gun")
+        {
+            napalm = 0;
+            munitions = 250;
+            ControllerPlayer.hammo = munitions;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (GetInputDown() && Hammo())
+        {
+            audioData.Play(0);
+            //Debug.Log("primo if");
+        }
+        if (GetInputDown() && !Hammo())
+        {
+            audioCharger.PlayOneShot(noHammo, 1f);
+            //Debug.Log("secondo if");
+        }
+        if (GetInput() && Hammo())
+        {
+            if (tag == "FlameThrowerGun")
+            {
+                flameThrower.SetActive(true);
+                smoke.SetActive(false);
+                napalm = napalm - 1;
+                ControllerPlayer.hammo = napalm;
+                //Debug.Log("terzo if"+ napalm);
+            }
+            else if (tag == "Gun")
+            {
+                projectile = Instantiate(projectilePrefab, transform.position+new Vector3 (0,1,0), transform.rotation);
+                muzzle.SetActive(true);
+                munitions = munitions - 1;
+                ControllerPlayer.hammo = munitions;
+                Debug.Log("quarto if");
+            }
+            transform.position = new Vector3(transform.position.x, transform.position.y, Random.Range(transform.position.z - offset, transform.position.z + offset));
+            
+        }
+        if (GetInputUp() || !Hammo())
+        {
+            if (tag == "FlameThrowerGun")
+            {
+                flameThrower.SetActive(false);
+                smoke.SetActive(true);
+                //Debug.Log("quinto if");
+            }
+            else if (tag == "Gun")
+            {
+                muzzle.SetActive(false);
+                //Debug.Log("sesto if");
+            }
+            transform.localPosition = gunPosition;
+            audioData.Pause();
+        }
+    }
+    
+    bool GetInputDown()
+    {
+        if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire2"))
+            return true;
+        else
+            return false;
+    }
+
+    bool GetInput()
+    {
+        if (Input.GetKey("space") || Input.GetMouseButton(0) || Input.GetButton("Fire2"))
+            return true;
+        else
+            return false;
+    }
+
+    bool GetInputUp()
+    {
+        if (Input.GetKeyUp("space") || Input.GetMouseButtonUp(0) || Input.GetButtonUp("Fire2"))
+            return true;
+        else
+            return false;
+    }
+
+    bool Hammo()
+    {
+        if (napalm > 0 || munitions > 0)
+            return true;
+        else
+            return false;
+    }
+}

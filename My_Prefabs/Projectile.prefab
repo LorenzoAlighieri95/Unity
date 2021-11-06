@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 7448481279429858239}
   - component: {fileID: 5263638877030876880}
   - component: {fileID: 2775658536745741439}
-  - component: {fileID: 528311187}
-  - component: {fileID: 1066040818602157314}
+  - component: {fileID: 355802647251097586}
+  - component: {fileID: -3896980891319117322}
+  - component: {fileID: 7751670405846627928}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Projectile
@@ -28,13 +29,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9134438684308073642}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.168, y: 1.34, z: -7.99}
-  m_LocalScale: {x: 0.005, y: 0.005, z: 0.01}
+  m_LocalScale: {x: 0.035, y: 0.1, z: 0.035}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &7448481279429858239
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -97,7 +98,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &528311187
+--- !u!114 &355802647251097586
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,11 +107,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 9134438684308073642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90067b69ea516564b9817503e76cbc34, type: 3}
+  m_Script: {fileID: 11500000, guid: 147869323672816448af099c0a3d4608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
---- !u!54 &1066040818602157314
+  speed: 500
+--- !u!114 &-3896980891319117322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9134438684308073642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29606d8f5d93d9041a1b7859eee228d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &7751670405846627928
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,5 +137,5 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 6
-  m_CollisionDetection: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2

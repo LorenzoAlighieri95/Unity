@@ -26,31 +26,29 @@ public class DetectCollision : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        /*
-        if (collision.gameObject.tag=="Projectile")
-        {
-            Destroy(GetComponent<Collider>());
-            GetComponent<MoveForward>().speed = -1;
-            zombieAnim.SetTrigger("FallingBackTrigger");
-            GetComponent<MoveForward>().speed = 0;
-            Destroy(collision.gameObject);
-            //Debug.Log("COLLISION");
+
+        if (collision.gameObject.tag == "Projectile")
+        { 
+            ZombieDies();
         }
-        */
+        
         if (collision.gameObject.tag == "Player")
         {
             if (!PlayerCollisions.powerUp)
             {
-                StartCoroutine(die());
-                transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, Time.time * 1.0f);
-                
+                StartCoroutine(die());             
+                //transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, Time.time * 1.0f);
             } else
             {
                 zombieAnim.SetTrigger("FallingBackTrigger");
             }
         } else
         {
-           transform.Rotate(0, Random.Range(-45,45), 0, Space.Self);
+           transform.Rotate(0, Random.Range(-5,5), 0, Space.Self);
+        }
+        if (collision.gameObject.tag == "Wall")
+        {
+            gameObject.SetActive(false);
         }
     }
 
@@ -58,23 +56,14 @@ public class DetectCollision : MonoBehaviour
     {
         if (other.tag == "Projectile")
         {
-            Destroy(GetComponent<Collider>());
-            GetComponent<MoveForward>().speed = -1;
-            zombieAnim.SetTrigger("FallingBackTrigger");
-            
-            GetComponent<MoveForward>().speed = 0;
-            
-            if (Random.Range(0, 10) > 8)
-            {
-                Instantiate(dropMunitions, new Vector3(transform.position.x, 0.2f, transform.position.z),dropMunitions.transform.rotation);
-            }
+            ZombieDies();
         }
     }
 
     IEnumerator die()
     {
         zombieAnim.SetTrigger("AttackTrigger");
-        GameObject.Find("FlameThrowerGun").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
+        GameObject.Find("GunContainer").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
         GetComponent<MoveForward>().speed = -0.5f;
         GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -0.5f;
         dead = true;
@@ -83,11 +72,21 @@ public class DetectCollision : MonoBehaviour
         scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
         dead = false;
-        AudioListener.pause = false;
-        //ControllerPlayer.charger.Clear();        
-        
+        AudioListener.pause = false;            
     }
 
+    public void ZombieDies()
+    {
+        //GetComponent<MoveForward>().speed = -5;
+        ControllerPlayer.killPoints += 50;
+        zombieAnim.SetTrigger("FallingBackTrigger");
+        GetComponent<MoveForward>().speed = 0;
+        GetComponent<Collider>().enabled = false;
+        if (Random.Range(0, 10) > 8)
+        {
+            Instantiate(dropMunitions, new Vector3(transform.position.x, 0.2f, transform.position.z), dropMunitions.transform.rotation);
+        }
+    }
     /*
 private void OnTriggerEnter(Collider other)
 {   

@@ -76,8 +76,8 @@ public class SpawnManager : MonoBehaviour
             //Debug.Log( "speed: " + player.GetComponent<ControllerPlayer>().speed + " interval: "+ zombieInterval);
             //zombieInterval = 0.25f;
 
-            zombieInterval = 2/player.GetComponent<ControllerPlayer>().speed;
-            //Debug.Log("speed: " + player.GetComponent<ControllerPlayer>().speed + " interval: " + zombieInterval);
+            zombieInterval = player.GetComponent<ControllerPlayer>().speed / 10;
+            Debug.Log("speed: " + player.GetComponent<ControllerPlayer>().speed + " interval: " + zombieInterval);
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
             Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
@@ -95,6 +95,8 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+
+
     IEnumerator SpawnRandomGun(float waitTime)
     {
         while (spawnGun)
@@ -103,7 +105,7 @@ public class SpawnManager : MonoBehaviour
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - 10, Camera.main.transform.position.x + 10);
             Vector3 spawnPos = new Vector3(spawnX, 2, spawnZ);
-            if (Random.Range(0, 10) < 5) objTag = "Gun";
+            if (Random.Range(0, 10) <= 5) objTag = "Gun";
             else objTag = "FlameThrowerGun";
             GameObject gun = ObjectPool.SharedInstance.GetPooledObject(objTag);
             //float y = Random.Range(0f, 360f);
@@ -122,7 +124,6 @@ public class SpawnManager : MonoBehaviour
         while (spawnForest)
         {
             yield return new WaitForSeconds(waitTime);
-            forestInterval = 4 / player.GetComponent<ControllerPlayer>().speed;
             //indexForest = Random.Range(0, forest.Length);
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
@@ -136,7 +137,6 @@ public class SpawnManager : MonoBehaviour
                 tree.transform.rotation = Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z);
                 tree.SetActive(true);
             }
-            waitTime = forestInterval;
             //Instantiate(tree, spawnPos, Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z));
         }
     }

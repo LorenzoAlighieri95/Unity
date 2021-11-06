@@ -1679,7 +1679,6 @@ GameObject:
   - component: {fileID: 4938473770172480515}
   - component: {fileID: 4963034882930420730}
   - component: {fileID: 4071340432640018995}
-  - component: {fileID: 4082656234902597112}
   m_Layer: 0
   m_Name: ZombiePrefab
   m_TagString: Zombie
@@ -1747,7 +1746,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90067b69ea516564b9817503e76cbc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
+  speed: 0.25
+  rotation_Speed: 1
+  playerRange: 20
 --- !u!114 &7271467159265276728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,8 +1773,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4123127, y: 1.921244, z: 0.44785395}
-  m_Center: {x: 0.0012145259, y: 0.85025805, z: 0.0692632}
+  m_Size: {x: 0.4123127, y: 1.6531833, z: 0.44785395}
+  m_Center: {x: 0.0012145259, y: 0.992264, z: 0.0692632}
 --- !u!114 &4963034882930420730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,22 +1883,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!54 &4082656234902597112
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4493914613880827488}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
 --- !u!1 &4710940672626480558
 GameObject:
   m_ObjectHideFlags: 0

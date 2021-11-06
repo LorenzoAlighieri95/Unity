@@ -48,17 +48,13 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(FadeInText(gameOver.GetComponent<Text>(), 1f));
             StartCoroutine(FadeInText(finalScore.GetComponent<Text>(), 1f));
-            if (PauseMenu.GameIsPaused)
-            {
-                gameOver.SetActive(false);
-            }
         }
     }
 
     public void moreHammoUI(string hammo)
     {
         moreHammo.text = hammo;
-        StartCoroutine(FadeInText(moreHammo, 0.5f));
+        StartCoroutine(FadeInText(moreHammo, 0,5f));
         StartCoroutine(FadeOutText(moreHammo, 0.9f));
     }
 
@@ -95,7 +91,6 @@ public class GameManager : MonoBehaviour
             {
                 text.gameObject.SetActive(false);
                 break;
-                
             }
         }
     }

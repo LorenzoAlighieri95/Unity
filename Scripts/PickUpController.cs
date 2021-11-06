@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickUpController : MonoBehaviour
 {
-    //public GameObject gunScript;
+    public GunScript gunScript;
     public  Rigidbody rb;
     public  BoxCollider coll;
     private  Transform player, gunContainer, fpsCam;
@@ -13,16 +13,19 @@ public class PickUpController : MonoBehaviour
     public  float dropForwardForce, dropUpwardForce;
 
     public  bool equipped;
-    public  bool slotFull;
+    //public  bool slotFull;
 
     private bool takeGun;
 
-    // Start is called before the first frame update
+    public GameObject chargerSound;
+    public AudioClip switchGun;
+
     void Start()
     {
         player = GameObject.Find("Player").transform;
         gunContainer = GameObject.Find("GunContainer").transform;
         fpsCam = Camera.main.transform;
+        //gunScript = GetComponent<GunScript>();
         /*
         if (!equipped)
         {
@@ -54,46 +57,53 @@ public class PickUpController : MonoBehaviour
 
     public void PickUp(GameObject gameObject)
     {
+        chargerSound.GetComponent<AudioSource>().PlayOneShot(switchGun, 0.5f);
         equipped = true;
-        slotFull = true;
+        //slotFull = true;
 
         rb = gameObject.GetComponent<Rigidbody>();
         coll = gameObject.GetComponent<BoxCollider>();
 
         rb.isKinematic = true;
-        coll.isTrigger = true;
+        coll.enabled = false;
 
-        //gunScript.enabled = true;
+        GetComponent<GunScript>().enabled = true;
+        GetComponent<RotateGunInAir>().enabled = false;
 
         gameObject.transform.SetParent(gunContainer);
 
         if (gameObject.tag == "FlameThrowerGun") 
         {
-            gameObject.transform.localPosition = Vector3.zero;
-            gameObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            gameObject.transform.localPosition = new Vector3(-35,-3.5f,14f);
+            gameObject.transform.localRotation = Quaternion.Euler(0,-0.95f,0);
             gameObject.transform.localScale = Vector3.one;
 
         } else if (gameObject.tag == "Gun")
         {
-            gameObject.transform.localPosition = new Vector3(0,-2.9f,0);
-            gameObject.transform.localRotation = Quaternion.Euler(0, -75, 0);
-            gameObject.transform.localScale = new Vector3(50, 50, 50);
+            //gameObject.transform.localPosition = new Vector3(-30,-6,11);
+            //gameObject.transform.localRotation = Quaternion.Euler(0, -97, 0);
+            //gameObject.transform.localScale = new Vector3(55, 50, 50);
+            // NUOVA ARMA
+            gameObject.transform.localPosition = new Vector3(22,1.7f,0);
+            gameObject.transform.localRotation = Quaternion.Euler(0, -90, 0);
+            gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+           
         }
 
     }
 
     public void Drop(GameObject gameObject)
     {
-        Debug.Log("droppo");
+        
         equipped = false;
-        slotFull = false;
+        //slotFull = false;
 
         gameObject.transform.SetParent(null);
         rb = gameObject.GetComponent<Rigidbody>();
         coll = gameObject.GetComponent<BoxCollider>();
 
         rb.isKinematic = false;
-        coll.isTrigger = false;
+        coll.enabled = true;
 
         rb.velocity = player.GetComponent<Rigidbody>().velocity;
 
@@ -103,19 +113,9 @@ public class PickUpController : MonoBehaviour
         float random = Random.Range(-1f, 1f);
         rb.AddTorque(new Vector3(random, random, random) * 10);
 
-        //gunScript.enabled = false;
-    }
+        GetComponent<GunScript>().enabled = false;
 
-    /*
-    private void OnCollisionEnter(Collision collision)
-    {
 
-        if (collision.gameObject.tag == "Player")
-        {
-            takeGun = true;
-            if (equipped)) Drop();
-            Debug.Log("player collision: " + takeGun);
-        }
+        //Debug.Log(tag + " " +GetComponent<GunScript>().enabled);
     }
-    */
 }
