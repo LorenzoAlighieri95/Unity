@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerCollisions : MonoBehaviour
 {
+    public static bool dead = false;
+
     public AudioClip impact;
     public AudioClip scream;
     public AudioClip reloadGun;
@@ -84,6 +86,7 @@ public class PlayerCollisions : MonoBehaviour
                 voice.GetComponent<AudioSource>().PlayOneShot(scream, 0.5f);
             }
             StartCoroutine(FadeInObject(blood, 1.5f));
+            StartCoroutine(die(collision.gameObject));
         }
     }
 
@@ -140,7 +143,7 @@ public class PlayerCollisions : MonoBehaviour
     IEnumerator PowerUp()
     {
         gunContainer.gameObject.SetActive(false);
-        voice.GetComponent<AudioSource>().PlayOneShot(fallingKids, 0.5f);
+        voice.GetComponent<AudioSource>().PlayOneShot(fallingKids, 0.3f);
         powerUp = true;
         fire.SetActive(true);
         //GetComponent<BoxCollider>().enabled = false;
@@ -178,6 +181,22 @@ public class PlayerCollisions : MonoBehaviour
             obj.GetComponent<Renderer>().material.color = new Color(objectColor.r, objectColor.g, objectColor.b, fadeAmount);
             yield return null;
         }
+    }
+
+    IEnumerator die(GameObject zombie)
+    {
+        zombie.GetComponent<Animator>().SetTrigger("AttackTrigger");
+        GameObject.Find("GunContainer").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
+        zombie.GetComponent<MoveForward>().speed = -0.5f;
+        GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -0.5f;
+        dead = true;
+        GameObject.Find("GameManager").GetComponent<GameManager>().Save();
+        yield return new WaitForSeconds(3f);
+        AudioListener.pause = true;
+        dead = false;
+        AudioListener.pause = false;
+        //scene = ;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     /*

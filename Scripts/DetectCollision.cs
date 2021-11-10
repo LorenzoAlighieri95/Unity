@@ -8,20 +8,14 @@ public class DetectCollision : MonoBehaviour
     private Animator zombieAnim;
     private Scene scene;
     private Quaternion originalRotation;
-    public static bool dead = false;
+    //public static bool dead = false;
     //public GameObject gun;
     public GameObject dropMunitions;
-
 
     void Start()
     {
         zombieAnim = GetComponent<Animator>();
         originalRotation = transform.rotation;
-    }
-
-    void Update()
-    {
-
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -36,7 +30,7 @@ public class DetectCollision : MonoBehaviour
         {
             if (!PlayerCollisions.powerUp)
             {
-                StartCoroutine(die());             
+                //StartCoroutine(die());             
                 //transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, Time.time * 1.0f);
             } else
             {
@@ -44,7 +38,7 @@ public class DetectCollision : MonoBehaviour
             }
         } else
         {
-           transform.Rotate(0, Random.Range(-5,5), 0, Space.Self);
+           transform.Rotate(0, Random.Range(-20,20), 0, Space.Self);
         }
         if (collision.gameObject.tag == "Wall")
         {
@@ -59,7 +53,7 @@ public class DetectCollision : MonoBehaviour
             ZombieDies();
         }
     }
-
+    /*
     IEnumerator die()
     {
         zombieAnim.SetTrigger("AttackTrigger");
@@ -67,14 +61,15 @@ public class DetectCollision : MonoBehaviour
         GetComponent<MoveForward>().speed = -0.5f;
         GameObject.Find("Player").GetComponent<ControllerPlayer>().speed = -0.5f;
         dead = true;
-        yield return new WaitForSeconds(2.5f);
+        GameObject.Find("GameManager").GetComponent<GameManager>().Save();
+        yield return new WaitForSeconds(3f);
         AudioListener.pause = true;
-        scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
         dead = false;
-        AudioListener.pause = false;            
+        AudioListener.pause = false;
+        scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);            
     }
-
+    */
     public void ZombieDies()
     {
         //GetComponent<MoveForward>().speed = -5;

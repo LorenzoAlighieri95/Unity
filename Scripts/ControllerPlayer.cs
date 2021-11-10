@@ -35,13 +35,13 @@ public class ControllerPlayer : MonoBehaviour
     {
         meters = Mathf.RoundToInt(transform.position.z);
 
-        if (!PauseMenu.GameIsPaused && !DetectCollision.dead)
+        if (!PauseMenu.GameIsPaused && /*!DetectCollision.dead*/ !PlayerCollisions.dead)
         {
             score = meters + killPoints;
             munitions.text = "   Hammo: " + hammo.ToString();
             scoreText.text = "   Score: " + score.ToString();
             //scoreText.text = "   Speed: " + speed.ToString();
-            finalScore.text = "Final Score: " + meters.ToString();
+            finalScore.text = "Final Score: " + score.ToString();
 
             if (!PlayerCollisions.powerUp)
             {

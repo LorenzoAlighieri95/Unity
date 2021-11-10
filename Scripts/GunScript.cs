@@ -31,7 +31,7 @@ public class GunScript : MonoBehaviour
 
     void Update()
     {
-        if (!PauseMenu.GameIsPaused && !DetectCollision.dead)
+        if (!PauseMenu.GameIsPaused && /*!DetectCollision*/!PlayerCollisions.dead)
         {
             if (GameObject.Find("GunContainer") != null)
             {

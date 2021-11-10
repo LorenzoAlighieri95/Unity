@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.Events; 
-using UnityEngine.EventSystems; 
+using UnityEngine.EventSystems;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,12 +18,19 @@ public class GameManager : MonoBehaviour
     public GameObject gameOver;
     public GameObject finalScore;
     public Text moreHammo;
+    public Text bestScoreUI;
+
+    public int bestScore;
 
     void Start()
     {
         //title = title.GetComponent<Text>();
         //subtitle = subtitle.GetComponent<Text>();
         //gameOver = gameOver.GetComponent<Text>();
+        //score = GameObject.Find("Player").GetComponent<ControllerPlayer>().score       
+        Load();
+
+        bestScoreUI.text = "    High: " + bestScore.ToString();
 
         titleColor = title.GetComponent<Text>().color;
         subtitleColor = subtitle.GetComponent<Text>().color;
@@ -44,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (DetectCollision.dead)
+        if (/*DetectCollision*/PlayerCollisions.dead)
         {
             StartCoroutine(FadeInText(gameOver.GetComponent<Text>(), 1f));
             StartCoroutine(FadeInText(finalScore.GetComponent<Text>(), 1f));
@@ -53,6 +61,7 @@ public class GameManager : MonoBehaviour
                 gameOver.SetActive(false);
             }
         }
+        //bestScoreUI.text = "    Best: " + bestScore.ToString();
     }
 
     public void moreHammoUI(string hammo)
@@ -116,4 +125,31 @@ public class GameManager : MonoBehaviour
         }
     }
     */
+    [System.Serializable]
+    class SaveData
+    {
+        public int bestScore;
+    }
+
+    public void Save()
+    {
+        SaveData data = new SaveData();
+        if (bestScore < ControllerPlayer.score)
+        {
+            data.bestScore = ControllerPlayer.score;          
+        }
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void Load()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);          
+            bestScore = data.bestScore;
+        }
+    }
 }

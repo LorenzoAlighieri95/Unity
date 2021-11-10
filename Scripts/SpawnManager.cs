@@ -58,10 +58,6 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnRandomGun(gunInterval));
     }
 
-    void Update()
-    {
-
-    }
 
     IEnumerator SpawnRandomZombie(float waitTime)
     {
@@ -69,20 +65,21 @@ public class SpawnManager : MonoBehaviour
         {
             yield return new WaitForSeconds(waitTime);
             //zombieInterval = 100f/ ((float)ControllerPlayer.meters+1);
-            zombieSlip = 1000;
+            //zombieSlip = 1000;
             //zombieInterval = -zombieSlip * Mathf.Pow(10f,-4f) * (float)ControllerPlayer.meters + 4.8f;
             //zombieInterval = 1f;
-            zombieInterval = -zombieSlip * Mathf.Pow(10f, -4f) * player.GetComponent<ControllerPlayer>().speed + 4.8f;
+            //zombieInterval = -zombieSlip * Mathf.Pow(10f, -4f) * player.GetComponent<ControllerPlayer>().speed + 4.8f;
             //Debug.Log( "speed: " + player.GetComponent<ControllerPlayer>().speed + " interval: "+ zombieInterval);
             //zombieInterval = 0.25f;
 
-            zombieInterval = 2/player.GetComponent<ControllerPlayer>().speed;
+            zombieInterval = 100f/player.GetComponent<ControllerPlayer>().speed;
             //Debug.Log("speed: " + player.GetComponent<ControllerPlayer>().speed + " interval: " + zombieInterval);
-            spawnZ = Camera.main.transform.position.z + spawnDistance;
-            spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
-            Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+            //spawnZ = Camera.main.transform.position.z + spawnDistance;
+            //spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
+            //Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
             //Instantiate(zombie, spawnPos, zombie.transform.rotation);
-            zombie = ObjectPool.SharedInstance.GetPooledObject("Zombie");
+            //zombie = ObjectPool.SharedInstance.GetPooledObject("Zombie");
+            /*
             if (zombie != null)
             {
                 zombie.transform.position = spawnPos;
@@ -90,6 +87,24 @@ public class SpawnManager : MonoBehaviour
                 zombie.GetComponent<Collider>().enabled = true;
                 zombie.GetComponent<AudioSource>().clip = zombieSounds[Random.Range(0, zombieSounds.Length)];
                 zombie.GetComponent<AudioSource>().Play(0);
+            }
+            */
+            //waitTime = zombieInterval;
+            for (int i = 0; i < 50; i++)
+            {
+                spawnZ = Random.Range(Camera.main.transform.position.z + spawnDistance, Camera.main.transform.position.z + spawnDistance *2);
+                spawnX = Random.Range(Camera.main.transform.position.x - 30, Camera.main.transform.position.x + 30);
+                Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+                //Instantiate(zombie, spawnPos, zombie.transform.rotation);
+                zombie = ObjectPool.SharedInstance.GetPooledObject("Zombie");
+                if (zombie != null)
+                {
+                    zombie.transform.position = spawnPos;
+                    zombie.SetActive(true);
+                    zombie.GetComponent<Collider>().enabled = true;
+                    zombie.GetComponent<AudioSource>().clip = zombieSounds[Random.Range(0, zombieSounds.Length)];
+                    zombie.GetComponent<AudioSource>().Play(0);
+                }
             }
             waitTime = zombieInterval;
         }
@@ -122,31 +137,49 @@ public class SpawnManager : MonoBehaviour
         while (spawnForest)
         {
             yield return new WaitForSeconds(waitTime);
-            forestInterval = 4 / player.GetComponent<ControllerPlayer>().speed;
+            forestInterval = 160f / player.GetComponent<ControllerPlayer>().speed;
             //indexForest = Random.Range(0, forest.Length);
-            spawnZ = Camera.main.transform.position.z + spawnDistance;
-            spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-            Vector3 spawnPos = new Vector3(spawnX, -1, spawnZ);
+            //spawnZ = Camera.main.transform.position.z + spawnDistance;
+            //spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+            //Vector3 spawnPos = new Vector3(spawnX, -1, spawnZ);
             //GameObject tree = forest[indexForest];
-            GameObject tree = ObjectPool.SharedInstance.GetPooledObject("Tree");
-            float y = Random.Range(0f, 360f);
+            //GameObject tree = ObjectPool.SharedInstance.GetPooledObject("Tree");
+            //float y = Random.Range(0f, 360f);
+            /*
             if (tree != null)
             {
                 tree.transform.position = spawnPos;
                 tree.transform.rotation = Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z);
                 tree.SetActive(true);
             }
-            waitTime = forestInterval;
+            */
+            //waitTime = forestInterval;
+            for (int i = 0; i < 50; i++)
+            {
+                GameObject tree = ObjectPool.SharedInstance.GetPooledObject("Tree");
+                if (tree != null)
+                {
+                    float y = Random.Range(0f, 360f);
+                    spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+                    spawnZ = Random.Range(Camera.main.transform.position.z + spawnDistance+50, Camera.main.transform.position.z + spawnDistance * 2);                  
+                    tree.transform.rotation = Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z);
+                    Vector3 spawnPos = new Vector3(spawnX, 0, spawnZ);
+                    tree.transform.position = spawnPos;
+                    tree.SetActive(true);
+                }
+            }
             //Instantiate(tree, spawnPos, Quaternion.Euler(tree.transform.rotation.x, y, tree.transform.rotation.z));
+            waitTime = forestInterval;
         }
     }
-
+    /*
     IEnumerator SpawnGrass(float waitTime)
     {
         while (spawnGrass)
         {
             yield return new WaitForSeconds(waitTime);
             //indexGrass = Random.Range(0, grass.Length);
+            grassInterval = 1 / player.GetComponent<ControllerPlayer>().speed;
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
             Vector3 spawnPos = new Vector3(spawnX, 0.2f, spawnZ);
@@ -158,6 +191,38 @@ public class SpawnManager : MonoBehaviour
                 blade.transform.position = spawnPos;
                 blade.SetActive(true);
             }
+            waitTime = grassInterval;
+        }
+    }
+    */
+
+    IEnumerator SpawnGrass(float waitTime)
+    {
+        while (spawnGrass)
+        {
+            yield return new WaitForSeconds(waitTime);
+            //indexGrass = Random.Range(0, grass.Length);
+            grassInterval = 80 / player.GetComponent<ControllerPlayer>().speed;
+            //spawnZ = Camera.main.transform.position.z + spawnDistance;
+            
+            //Vector3 spawnPos = new Vector3(spawnX, 0.2f, spawnZ);
+            //GameObject blade = grass[indexGrass];
+            //Instantiate(blade, spawnPos, blade.transform.rotation);
+            
+            for (int i = 0;  i < 50; i++)
+            {
+                GameObject blade = ObjectPool.SharedInstance.GetPooledObject("Grass");
+                if (blade != null)
+                {
+                    spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
+                    spawnZ = Random.Range(Camera.main.transform.position.z + spawnDistance, Camera.main.transform.position.z + spawnDistance *2);
+                    Vector3 spawnPos = new Vector3(spawnX, 0f, spawnZ);
+                    blade.transform.position = spawnPos;
+                    blade.SetActive(true);
+                }
+            }
+
+            waitTime = grassInterval;
         }
     }
 
@@ -169,7 +234,7 @@ public class SpawnManager : MonoBehaviour
             //indexObjs = Random.Range(0, randomObjs.Length);
             spawnZ = Camera.main.transform.position.z + spawnDistance;
             spawnX = Random.Range(Camera.main.transform.position.x - spawnRangeX, Camera.main.transform.position.x + spawnRangeX);
-            Vector3 spawnPos = new Vector3(spawnX, -0.2f, spawnZ);
+            Vector3 spawnPos = new Vector3(spawnX, -0.15f, spawnZ);
             //GameObject obj = randomObjs[indexObjs];
             float y = Random.Range(0f, 360f);
             //Instantiate(obj, spawnPos, Quaternion.Euler(obj.transform.rotation.x, y, obj.transform.rotation.z));
