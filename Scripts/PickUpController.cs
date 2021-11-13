@@ -25,41 +25,12 @@ public class PickUpController : MonoBehaviour
         player = GameObject.Find("Player").transform;
         gunContainer = GameObject.Find("GunContainer").transform;
         fpsCam = Camera.main.transform;
-        //gunScript = GetComponent<GunScript>();
-        /*
-        if (!equipped)
-        {
-            // gunScript.enabled = false;
-            rb.isKinematic = false;
-            coll.isTrigger = false;
-        }
-        if (equipped)
-        {
-            // gunScript.enabled = true;
-            rb.isKinematic = true;
-            coll.isTrigger = true;
-        }
-        */
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //Vector3 distancePlayer = player.position - transform.position;
-        //Debug.Log("equipped: " + equipped + " take gun: " + PlayerCollisions.takeGun);
-        //if (equipped && takeGun /*Input.GetKeyDown(KeyCode.Q)*/) Drop();
-        //if (!equipped && distancePlayer.magnitude <= pickUpRange /*&& PlayerCollisions.takeGun Input.GetKeyDown(KeyCode.E) */&& !slotFull) PickUp();
-
-        //takeGun = false;
-
-
     }
 
     public void PickUp(GameObject gameObject)
     {
         chargerSound.GetComponent<AudioSource>().PlayOneShot(switchGun, 0.5f);
         equipped = true;
-        //slotFull = true;
 
         rb = gameObject.GetComponent<Rigidbody>();
         coll = gameObject.GetComponent<BoxCollider>();
@@ -96,7 +67,6 @@ public class PickUpController : MonoBehaviour
     {
         
         equipped = false;
-        //slotFull = false;
 
         gameObject.transform.SetParent(null);
         rb = gameObject.GetComponent<Rigidbody>();
@@ -114,8 +84,5 @@ public class PickUpController : MonoBehaviour
         rb.AddTorque(new Vector3(random, random, random) * 10);
 
         GetComponent<GunScript>().enabled = false;
-
-
-        //Debug.Log(tag + " " +GetComponent<GunScript>().enabled);
     }
 }

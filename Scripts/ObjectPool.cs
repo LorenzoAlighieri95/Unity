@@ -13,8 +13,6 @@ public class ObjectPool : MonoBehaviour
 {
     public static ObjectPool SharedInstance;
     public List<GameObject> pooledObjects;
-    //public GameObject objectToPool;
-    //public int amountToPool;
     public List<ObjectPoolItem> itemsToPool;
     private int randomIndex;
 
@@ -26,7 +24,6 @@ public class ObjectPool : MonoBehaviour
     void Start()
     {
         pooledObjects = new List<GameObject>();
-        //GameObject tmp;
         foreach (ObjectPoolItem item in itemsToPool)
         {
             for (int i = 0; i < item.amountToPool; i++)
@@ -41,15 +38,6 @@ public class ObjectPool : MonoBehaviour
 
     public GameObject GetPooledObject(string tag)
     {
-        /*
-        for (int i = 0; i < amountToPool; i++)
-        {
-            if (!pooledObjects[i].activeInHierarchy)
-            {
-                return pooledObjects[i];
-            }
-        }
-        */
         for (int i = 0; i < pooledObjects.Count; i++)
         {
             if (!pooledObjects[i].activeInHierarchy && pooledObjects[i].tag == tag)

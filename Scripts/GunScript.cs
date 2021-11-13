@@ -136,7 +136,6 @@ public class GunScript : MonoBehaviour
 
     IEnumerator DestroyProjectile(GameObject go)
     {
- 
         yield return new WaitForSeconds(1f);
         go.SetActive(false);
     }

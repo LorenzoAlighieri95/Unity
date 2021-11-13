@@ -11,6 +11,5 @@
 22) quando si prendono munizioni durante il powerup l'intefaccia si aggiorna alla fine del powerup
 23) risolvere bug di arma che scompare dopo powerUp
 24) risolvere bug del restart
-25) Aggiungere messaggio in caso di nuovo final score
 26) risolvere bug: non compare sull'UI quando raccogli munizioni da terra (500)
 */

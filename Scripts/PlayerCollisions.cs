@@ -74,25 +74,17 @@ public class PlayerCollisions : MonoBehaviour
                 SetHammo(GetHammo() - 50);
                 gameManager.moreHammoUI("-50");
             }
-            //transform.Translate(Random.Range(Random.Range(-1.5f, -1f), Random.Range(1f, 1.5f)), 0, 0);
             StartCoroutine(FadeInObject(blood, 1.5f));
             StartCoroutine(FadeOutObject(blood, 0.5f));
         } 
         if (collision.gameObject.tag == "Zombie" && !powerUp)
         {
-            Camera.main.GetComponent<CameraShake>().shakeDuration = 0.5f;
-            if (!voice.GetComponent<AudioSource>().isPlaying)
-            {
-                voice.GetComponent<AudioSource>().PlayOneShot(scream, 0.5f);
-            }
-            StartCoroutine(FadeInObject(blood, 1.5f));
             StartCoroutine(die(collision.gameObject));
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //munitions = gunContainer.GetChild(0).gameObject.GetComponent<GunScript>().munitions;
         if (other.CompareTag("Munitions"))
         {
             prevHammo = GetHammo();
@@ -107,7 +99,6 @@ public class PlayerCollisions : MonoBehaviour
                 SetHammo(GetHammo()+50);
                 gameManager.moreHammoUI("+50");
                 voice.GetComponent<AudioSource>().PlayOneShot(reloadGun, 1f);
-                //gameManager.moreHammoUI(true);
             }
             else if (GetHammo() > 450)
             {
@@ -185,6 +176,12 @@ public class PlayerCollisions : MonoBehaviour
 
     IEnumerator die(GameObject zombie)
     {
+        Camera.main.GetComponent<CameraShake>().shakeDuration = 0.5f;
+        if (!voice.GetComponent<AudioSource>().isPlaying)
+        {
+            voice.GetComponent<AudioSource>().PlayOneShot(scream, 0.5f);
+        }
+        StartCoroutine(FadeInObject(blood, 1.5f));
         zombie.GetComponent<Animator>().SetTrigger("AttackTrigger");
         GameObject.Find("GunContainer").transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 100);
         zombie.GetComponent<MoveForward>().speed = -0.5f;
@@ -192,10 +189,9 @@ public class PlayerCollisions : MonoBehaviour
         dead = true;
         GameObject.Find("GameManager").GetComponent<GameManager>().Save();
         yield return new WaitForSeconds(3f);
-        AudioListener.pause = true;
+        //AudioListener.pause = true;
         dead = false;
-        AudioListener.pause = false;
-        //scene = ;
+        //AudioListener.pause = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

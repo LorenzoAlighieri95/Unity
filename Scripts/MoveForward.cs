@@ -26,10 +26,8 @@ public class MoveForward : MonoBehaviour
         if (transform.position.z < playerTransform.position.z + playerRange*2 && transform.position.x > transform.position.x - playerRange && transform.position.x < transform.position.x + playerRange)
         {
             GetComponent<Animator>().SetTrigger("RunTrigger");
-            //speed = 2;
         }
         
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
-        //transform.position += transform.forward * speed * Time.deltaTime;   
     }
 }

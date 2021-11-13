@@ -58,7 +58,6 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnRandomGun(gunInterval));
     }
 
-
     IEnumerator SpawnRandomZombie(float waitTime)
     {
         while (spawnZombie)

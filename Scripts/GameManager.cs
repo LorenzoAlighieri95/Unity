@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public Text moreHammo;
     public Text bestScoreUI;
 
+    public GameObject newHighScoreUI;
+
     public int bestScore;
 
     void Start()
@@ -41,7 +43,6 @@ public class GameManager : MonoBehaviour
         subtitle.GetComponent<Text>().color = new Color(subtitleColor.r, subtitleColor.g, subtitleColor.b, 0);
         gameOver.GetComponent<Text>().color = new Color(gameOverColor.r, gameOverColor.g, gameOverColor.b, 0);
         finalScore.GetComponent<Text>().color = new Color(finalScoreColor.r, finalScoreColor.g, finalScoreColor.b, 0);
-
 
         StartCoroutine(FadeInText(title.GetComponent<Text>(), 1f));
         StartCoroutine(FadeInText(subtitle.GetComponent<Text>(), 1f));
@@ -136,6 +137,8 @@ public class GameManager : MonoBehaviour
         SaveData data = new SaveData();
         if (bestScore < ControllerPlayer.score)
         {
+            //GameObject.Find("NewHighScore").SetActive(true);
+            newHighScoreUI.SetActive(true);
             data.bestScore = ControllerPlayer.score;          
         }
         string json = JsonUtility.ToJson(data);
